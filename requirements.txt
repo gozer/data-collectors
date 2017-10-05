@@ -1,0 +1,5 @@
+pandas
+click==6.7
+PyYAML==3.12
+pyodbc
+pytest

@@ -1,2 +1,3 @@
-# data-collectors
-A set of modules that can be used to collect data from a variety of sources within Mozilla's IT ecosystem
+# Data-Collectors
+
+Simple ETL jobs for collecting data from various sources and loading into vertica.
