@@ -32,7 +32,7 @@ def test_foo():
 
 def test_load(odbc):
     adjust.load(odbc, "foo", "output.foo", "rejects", "exceptions")
-    assert odbc.execute.call_count is 2 #Called for both truncate and copy
+    assert odbc.execute.call_count is 2  # Called for both truncate and copy
 
 
 if __name__ == '__main__':
