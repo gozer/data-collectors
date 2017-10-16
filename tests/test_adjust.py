@@ -3,6 +3,7 @@ from unittest import mock
 
 import pytest
 
+import collectors.common
 from collectors import adjust
 
 test_data = """
@@ -24,17 +25,17 @@ def test_colllect():
     print("Loaded successfully")
 
 
-def test_foo():
+def test_adjust_url_builder():
     url = adjust.build_dau_url("abc", "123")
     assert url is not None
     assert url.__contains__("https://api.adjust.com")
 
 
 def test_load(odbc):
-    adjust.load(odbc, "foo", "output.foo", "rejects", "exceptions")
-    assert odbc.execute.call_count is 2  # Called for both truncate and copy
+    collectors.common.load(odbc, "foo", "output.foo", "rejects", "exceptions")
+    assert odbc.execute.call_count is 4  # Truncate, copy, insert, commit
 
 
 if __name__ == '__main__':
     test_colllect()
-    test_foo()
+    test_adjust_url_builder()

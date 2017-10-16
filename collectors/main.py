@@ -51,15 +51,5 @@ def setup_logging(logging_config=None):
     return config
 
 
-def load_settings(yaml_file):
-    """
-    Load settings for the collectors
-    :param yaml_file: YAML file containing job configuration
-    :return: dict of settings
-    """
-    with open(yaml_file, 'r') as f:
-        return yaml.safe_load(f.read())
-
-
 if __name__ == "__main__":
     cli()

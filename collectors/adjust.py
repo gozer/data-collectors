@@ -1,11 +1,10 @@
 import logging
 import os
-import pyodbc
 
 import click
 import pandas as pd
 
-from collectors.main import load_settings
+from collectors.common import load, connect, write_to_file, load_settings
 
 ADJUST_URL_BASE = "https://api.adjust.com/kpis/v1/{app_key}"
 logger = logging.getLogger(__name__)
@@ -62,32 +61,6 @@ def collect(adj_settings, load_path) -> str:
     return write_to_file(df, load_path)
 
 
-def load(cursor, table, data_file, reject_file, exception_file) -> None:
-    # Truncate the table before the load since every load is a FULL rewrite
-    trunc_tmpl = "TRUNCATE TABLE {tbl}"
-    cursor.execute(trunc_tmpl.format(tbl=table))
-
-    files = {
-        "data_file": data_file,
-        "reject_file": reject_file,
-        "exception_file": exception_file
-    }
-
-    # Copy the local file
-    copy_tmpl = "COPY {table} FROM LOCAL '{data_file}' " \
-                "DELIMITER ',' SKIP 1 " \
-                "REJECTED DATA '{reject_file}' " \
-                "EXCEPTIONS '{exception_file}' " \
-                "ABORT ON ERROR DIRECT"
-    copy_stmt = copy_tmpl.format(table=table, **files)
-    print(copy_stmt)
-    cursor.execute(copy_stmt)
-    logger.info("Completed loading {table} - #{count} Records".format(
-        table=table,
-        count=cursor.rowcount
-    ))
-
-
 def merge_apps(apps, adjust_token) -> pd.DataFrame:
     """
     Call collect_app on each of the apps that we are tracking in adjust.com
@@ -104,33 +77,6 @@ def merge_apps(apps, adjust_token) -> pd.DataFrame:
     df = pd.concat(frames)
 
     return df
-
-
-def write_to_file(df, load_path, filename="output.csv") -> str:
-    """
-    Write a dataframe to local storage
-    :param df: data frame containing the activity record
-    :param load_path: local path to write the data to
-    :param filename: name of the file to save the output to
-    :return: fully resolved path to the output file
-    """
-    data_file = os.path.join(load_path, filename)
-
-    if not os.path.exists(load_path):
-        os.makedirs(load_path)
-
-    df.to_csv(data_file, index=False)
-
-    return data_file
-
-
-def connect(dsn) -> type:
-    """
-    Obtain an ODBC cursor for vertica
-    """
-    cnxn = pyodbc.connect("DSN=%s" % dsn)
-    logger.info("Database connection established")
-    return cnxn.cursor()
 
 
 def build_dau_url(app_key, token) -> str:
