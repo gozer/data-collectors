@@ -10,19 +10,17 @@ import yaml
 logger = logging.getLogger(__name__)
 
 
-@click.group()
-@click.option("--log-conf",
-              type=click.Path(exists=True, readable=True),
-              help="Path to YAML logging configuration",
-              default=None)
-def cli(log_conf):
+def load_yaml(ctx, param, yaml_file) -> dict:
     """
-    Main entry point for the collectors
+    Load settings for the collectors
+    :param yaml_file: YAML file containing job configuration
+    :return: dict of settings
     """
-    setup_logging(log_conf)
+    with open(yaml_file, 'r') as f:
+        return yaml.safe_load(f.read())
 
 
-def setup_logging(logging_config=None):
+def setup_logging(logging_config=None) -> dict:
     """
     Setup the logging configuration
 
@@ -51,5 +49,24 @@ def setup_logging(logging_config=None):
     return config
 
 
+@click.group()
+@click.option("--log-conf", type=click.Path(exists=True, readable=True),
+              help="Path to YAML logging configuration", default=None)
+@click.option("--config", callback=load_yaml, default="/etc/data-collectors/data-collectors.yml",
+              type=click.Path(exists=True, readable=True), help='Base configuration for all jobs')
+@click.pass_context
+def cli(ctx, log_conf, config) -> None:
+    """
+    Main entry point for the collectors
+    """
+    setup_logging(log_conf)
+    ctx.obj['config'] = config
+
+
 if __name__ == "__main__":
-    cli()
+    from collectors.adjust import adjust_cmd
+    from collectors.redash import redash_cmd
+
+    cli.add_command(adjust_cmd)
+    cli.add_command(redash_cmd)
+    cli(obj={})

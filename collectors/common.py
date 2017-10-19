@@ -2,8 +2,6 @@ import logging
 import os
 import pyodbc
 
-import yaml
-
 logger = logging.getLogger(__name__)
 
 
@@ -73,13 +71,3 @@ def write_to_file(df, load_path, filename="output.csv") -> str:
     df.to_csv(data_file, index=False)
 
     return data_file
-
-
-def load_settings(yaml_file):
-    """
-    Load settings for the collectors
-    :param yaml_file: YAML file containing job configuration
-    :return: dict of settings
-    """
-    with open(yaml_file, 'r') as f:
-        return yaml.safe_load(f.read())

@@ -20,13 +20,16 @@ def odbc():
 
 def test_colllect():
     input = StringIO(test_data)
-    df = adjust.collect_app('foo', input)
+
+    job = adjust.DailyActiveUsers()
+    df = job.collect('foo', input)
     assert df.ndim is 2
     print("Loaded successfully")
 
 
 def test_adjust_url_builder():
-    url = adjust.build_dau_url("abc", "123")
+    job = adjust.DailyActiveUsers()
+    url = job.build_url("abc", "123")
     assert url is not None
     assert url.__contains__("https://api.adjust.com")
 
