@@ -6,7 +6,11 @@ from collectors.main import cli
 cli.add_command(adjust_cmd)
 cli.add_command(redash_cmd)
 
-__all__ = ['cli']
+# Workaroud to pass an empty context.obj
+def main():
+    cli(obj={})
+
+__all__ = ['main']
 
 """
 Collectors provides a set of CLI tools for gathering datasets from (mainly) REST sources

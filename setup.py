@@ -20,6 +20,6 @@ setup(
     setup_requires=['pytest-runner'],
     entry_points='''
         [console_scripts]
-        data-collectors=collectors:cli
+        data-collectors=collectors:main
     ''',
 )
