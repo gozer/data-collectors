@@ -7,7 +7,8 @@ setup(
     author_email='awirick@mozilla.com',
     description='Python tool for collecting data and loading it into vertica',
     url='https://github.com/mozilla-it/data-collectors',
-    py_modules=['collectors'],
+    packages=['collectors'],
+    data_files = [('collectors/defaults',['collectors/defaults/default_log_config.yml'])],
     python_requires='>=3.6',
     license='MPL-2.0',
     install_requires=[
