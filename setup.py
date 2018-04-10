@@ -9,7 +9,7 @@ setup(
     url='https://github.com/mozilla-it/data-collectors',
     packages=['collectors'],
     data_files = [('collectors/defaults',['collectors/defaults/default_log_config.yml'])],
-    python_requires='>=3.6',
+    python_requires='>=3.4',
     license='MPL-2.0',
     install_requires=[
         'Click',
