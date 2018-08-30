@@ -1,4 +1,4 @@
-pandas
+pandas==0.22.0
 click==6.7
 PyYAML==3.12
 pyodbc
